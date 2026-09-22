@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — Dashboard</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar injected by nav.js -->
+    <div class="main-content">
+      <!-- Topbar injected by nav.js -->
+      <div class="page-content" id="dashboard-root">
+
+        <div class="page-header">
+          <div>
+            <h1 class="page-title" id="welcome-msg">Good morning 👋</h1>
+            <p class="page-subtitle">Here's what's happening with your memories and goals today.</p>
+          </div>
+          <a href="/diary.html" class="btn btn-primary">+ New Memory</a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card skeleton" style="height:110px"></div>
+          <div class="stat-card skeleton" style="height:110px"></div>
+          <div class="stat-card skeleton" style="height:110px"></div>
+          <div class="stat-card skeleton" style="height:110px"></div>
+        </div>
+
+        <!-- Main grid -->
+        <div class="grid-2" style="align-items:start;gap:1.25rem">
+
+          <!-- Recent Memories -->
+          <div>
+            <div class="section-title">
+              📖 Recent Memories
+              <a href="/diary.html" class="btn btn-ghost btn-sm" style="margin-left:auto">View All</a>
+            </div>
+            <div id="recent-memories">
+              <div class="card skeleton" style="height:90px;margin-bottom:0.75rem"></div>
+              <div class="card skeleton" style="height:90px;margin-bottom:0.75rem"></div>
+              <div class="card skeleton" style="height:90px"></div>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+
+            <!-- Upcoming Reminders -->
+            <div>
+              <div class="section-title">
+                🔔 Upcoming Reminders
+                <a href="/reminders.html" class="btn btn-ghost btn-sm" style="margin-left:auto">View All</a>
+              </div>
+              <div id="upcoming-reminders">
+                <div class="card skeleton" style="height:65px;margin-bottom:0.75rem"></div>
+                <div class="card skeleton" style="height:65px"></div>
+              </div>
+            </div>
+
+            <!-- Pending Tasks -->
+            <div>
+              <div class="section-title">
+                ✅ Pending Tasks
+                <a href="/tasks.html" class="btn btn-ghost btn-sm" style="margin-left:auto">View All</a>
+              </div>
+              <div id="pending-tasks">
+                <div class="card skeleton" style="height:65px;margin-bottom:0.75rem"></div>
+                <div class="card skeleton" style="height:65px"></div>
+              </div>
+            </div>
+
+            <!-- Goal Progress -->
+            <div>
+              <div class="section-title">
+                🎯 Goal Progress
+                <a href="/goals.html" class="btn btn-ghost btn-sm" style="margin-left:auto">View All</a>
+              </div>
+              <div id="goal-progress">
+                <div class="card skeleton" style="height:75px;margin-bottom:0.75rem"></div>
+                <div class="card skeleton" style="height:75px"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

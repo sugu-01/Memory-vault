@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — Sign In</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <style>
+    .auth-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.75rem; }
+    .auth-tab-btn {
+      flex: 1;
+      padding: 0.7rem;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: var(--transition);
+    }
+    .auth-tab-btn:hover { color: var(--text-primary); }
+    .auth-tab-btn.active { color: var(--accent-light); border-bottom-color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-bg"></div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🧠</div>
+        <span class="auth-logo-text">Memory Vault</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" data-tab="login">Sign In</button>
+        <button class="auth-tab-btn" data-tab="register">Create Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="tab-login" class="tab-content active">
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="login-username">Username</label>
+            <input type="text" id="login-username" placeholder="your_username" autocomplete="username" required />
+            <span class="form-error hidden" id="login-username-err"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required />
+            <span class="form-error hidden" id="login-password-err"></span>
+          </div>
+          <div id="login-error" class="form-error hidden" style="margin-bottom:0.75rem;"></div>
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="login-btn">Sign In</button>
+        </form>
+      </div>
+
+      <!-- Register Form -->
+      <div id="tab-register" class="tab-content">
+        <form id="register-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="reg-username">Username</label>
+              <input type="text" id="reg-username" placeholder="cool_user" autocomplete="username" required />
+              <span class="form-error hidden" id="reg-username-err"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-displayname">Display Name</label>
+              <input type="text" id="reg-displayname" placeholder="Cool User" autocomplete="name" required />
+              <span class="form-error hidden" id="reg-displayname-err"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Email</label>
+            <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" required />
+            <span class="form-error hidden" id="reg-email-err"></span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="reg-password">Password</label>
+              <input type="password" id="reg-password" placeholder="Min 8 chars" autocomplete="new-password" required />
+              <span class="form-error hidden" id="reg-password-err"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-confirm">Confirm</label>
+              <input type="password" id="reg-confirm" placeholder="Repeat password" autocomplete="new-password" required />
+              <span class="form-error hidden" id="reg-confirm-err"></span>
+            </div>
+          </div>
+          <div id="register-error" class="form-error hidden" style="margin-bottom:0.75rem;"></div>
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="register-btn">Create Account</button>
+        </form>
+      </div>
+
+      <p class="text-xs text-muted" style="text-align:center;margin-top:1.25rem;">
+        Your memories, safely stored. 🔒
+      </p>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>

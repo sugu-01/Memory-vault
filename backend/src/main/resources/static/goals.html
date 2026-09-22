@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — Goals to Be Done</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .task-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .task-item:hover {
+      border-color: #D6D1C4;
+    }
+    .task-item.completed {
+      opacity: 0.6;
+    }
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+    }
+    .goal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .goal-card:hover {
+      border-color: #D6D1C4;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 7px;
+      background: var(--bg-subtle);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+    .process-step {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0.75rem;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-sm);
+      margin-top: 0.35rem;
+      font-size: 0.85rem;
+    }
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--lavender);
+      color: #5D507B;
+      font-weight: 700;
+      font-size: 1rem;
+      border: 1px solid var(--soft-purple);
+    }
+  </style>
+</head>
+<body>
+  <!-- Topbar and drawer inserted by nav.js -->
+
+  <main class="app-container">
+    <!-- Header -->
+    <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-end;">
+      <div>
+        <h1 class="page-title">🎯 Goals to Be Done</h1>
+        <p class="page-subtitle">Keep moving forward. Track active goals, daily tasks, deadlines, and reminders.</p>
+      </div>
+      <div style="display:flex; gap:0.5rem;">
+        <button class="btn btn-secondary btn-sm" id="btn-add-task">+ New Task</button>
+        <button class="btn btn-primary btn-sm" id="btn-add-goal">+ New Goal</button>
+      </div>
+    </div>
+
+    <!-- Sub-navigation Tabs -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" data-tab="tasks">Tasks & Focus</button>
+      <button class="tab-btn" data-tab="goals">Goals & Milestones</button>
+      <button class="tab-btn" data-tab="reminders">Reminders</button>
+      <button class="tab-btn" data-tab="evaluations">Review & Reflection</button>
+      <button class="tab-btn" data-tab="search">🔍 Search</button>
+    </nav>
+
+    <!-- Content Areas for each Tab -->
+
+    <!-- TAB 1: Tasks & Focus -->
+    <section id="tab-content-tasks">
+      <!-- Quick Add Task Bar -->
+      <div class="card" style="margin-bottom:1.5rem; padding:0.85rem 1rem;">
+        <form id="quick-task-form" style="display:flex; gap:0.6rem; align-items:center;">
+          <input type="text" id="quick-task-title" placeholder="Add a quick task or to-do..." required style="flex:3;" />
+          <input type="date" id="quick-task-date" style="flex:1; max-width:140px;" />
+          <select id="quick-task-priority" style="flex:1; max-width:120px;">
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High ⭐</option>
+            <option value="LOW">Low</option>
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm" id="quick-task-btn">Add</button>
+        </form>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <h2 style="font-size:1.05rem; font-weight:600; margin-bottom:0.75rem;">Pending Tasks (<span id="count-pending">0</span>)</h2>
+        <div id="pending-tasks-list">
+          <div class="card skeleton" style="height:65px; margin-bottom:0.5rem;"></div>
+          <div class="card skeleton" style="height:65px;"></div>
+        </div>
+      </div>
+
+      <div>
+        <h2 style="font-size:1.05rem; font-weight:600; margin-bottom:0.75rem; color:var(--text-secondary);">Completed (<span id="count-completed">0</span>)</h2>
+        <div id="completed-tasks-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Goals & Milestones -->
+    <section id="tab-content-goals" class="hidden">
+      <div id="goals-list">
+        <div class="card skeleton" style="height:120px; margin-bottom:1rem;"></div>
+        <div class="card skeleton" style="height:120px;"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Reminders -->
+    <section id="tab-content-reminders" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 style="font-size:1.05rem; font-weight:600;">Active Reminders</h2>
+        <button class="btn btn-secondary btn-sm" id="btn-add-reminder">+ Set Reminder</button>
+      </div>
+      <div id="reminders-list"></div>
+    </section>
+
+    <!-- TAB 4: Self-Evaluations -->
+    <section id="tab-content-evaluations" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 style="font-size:1.05rem; font-weight:600;">Personal Reflections & Evaluations</h2>
+        <button class="btn btn-secondary btn-sm" id="btn-add-evaluation">+ New Reflection</button>
+      </div>
+      <div id="evaluations-list"></div>
+    </section>
+
+    <!-- TAB 5: Search Goals & Tasks -->
+    <section id="tab-content-search" class="hidden">
+      <div class="card" style="margin-bottom:1.5rem; padding:0.85rem 1rem;">
+        <input type="text" id="goals-search-input" placeholder="Search tasks, goals, and commitments..." />
+      </div>
+      <div id="goals-search-results"></div>
+    </section>
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- Task Modal -->
+  <div class="modal-overlay" id="task-modal">
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="task-modal-title">Task Details</h3>
+        <button class="drawer-close" id="close-task-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="task-form">
+          <input type="hidden" id="task-id" value="" />
+          <div class="form-group">
+            <label class="form-label" for="task-title">Title *</label>
+            <input type="text" id="task-title" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="task-desc">Description</label>
+            <textarea id="task-desc" rows="2" placeholder="Optional notes..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="task-status">Status</label>
+              <select id="task-status">
+                <option value="PENDING">Pending</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="task-priority">Priority</label>
+              <select id="task-priority">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM" selected>Medium</option>
+                <option value="HIGH">High</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="task-due-date">Due Date</label>
+            <input type="date" id="task-due-date" />
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:1.25rem;">
+            <button type="button" class="btn btn-ghost text-danger hidden" id="task-delete-btn">Delete</button>
+            <div style="display:flex; gap:0.5rem; margin-left:auto;">
+              <button type="button" class="btn btn-secondary" id="task-cancel-btn">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="task-save-btn">Save Task</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goal Modal -->
+  <div class="modal-overlay" id="goal-modal">
+    <div class="modal" style="max-width:520px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="goal-modal-title">New Goal</h3>
+        <button class="drawer-close" id="close-goal-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="goal-form">
+          <input type="hidden" id="goal-id" value="" />
+          <div class="form-group">
+            <label class="form-label" for="goal-title">Goal Title *</label>
+            <input type="text" id="goal-title" placeholder="Learn Java, build project, health habit..." required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="goal-desc">Description & Motivation</label>
+            <textarea id="goal-desc" rows="2" placeholder="Why is this meaningful to you?"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="goal-status">Status</label>
+              <select id="goal-status">
+                <option value="ACTIVE">Active</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="PAUSED">Paused</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="goal-progress">Progress (%)</label>
+              <input type="number" id="goal-progress" min="0" max="100" value="0" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="goal-target-date">Target Date</label>
+              <input type="date" id="goal-target-date" />
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.25rem;">
+            <button type="button" class="btn btn-secondary" id="goal-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="goal-save-btn">Save Goal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reminder Modal -->
+  <div class="modal-overlay" id="reminder-modal">
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Set Reminder</h3>
+        <button class="drawer-close" id="close-reminder-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="reminder-form">
+          <input type="hidden" id="reminder-id" value="" />
+          <div class="form-group">
+            <label class="form-label" for="reminder-title">Title *</label>
+            <input type="text" id="reminder-title" placeholder="Submit document, call friend, review notes..." required />
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="reminder-time">Date & Time *</label>
+              <input type="datetime-local" id="reminder-time" required />
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="reminder-repeat">Repeat</label>
+              <select id="reminder-repeat">
+                <option value="NONE">Don't Repeat</option>
+                <option value="DAILY">Daily</option>
+                <option value="WEEKLY">Weekly</option>
+                <option value="MONTHLY">Monthly</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.25rem;">
+            <button type="button" class="btn btn-secondary" id="reminder-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="reminder-save-btn">Schedule Reminder</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evaluation Modal -->
+  <div class="modal-overlay" id="eval-modal">
+    <div class="modal" style="max-width:560px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Self-Evaluation Reflection</h3>
+        <button class="drawer-close" id="close-eval-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="eval-form">
+          <input type="hidden" id="eval-id" value="" />
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="eval-period-type">Period</label>
+              <select id="eval-period-type">
+                <option value="DAILY">Daily</option>
+                <option value="WEEKLY">Weekly</option>
+                <option value="MONTHLY">Monthly</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Score (1–10): <strong id="eval-score-num" style="color:var(--accent);">8</strong>/10</label>
+              <input type="range" id="eval-score" min="1" max="10" value="8" style="padding:0; margin-top:0.4rem;" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="eval-summary">Summary Reflection *</label>
+            <textarea id="eval-summary" rows="3" placeholder="How did things go? Any thoughts or quiet wins?" required></textarea>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.25rem;">
+            <button type="button" class="btn btn-secondary" id="eval-cancel-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="eval-save-btn">Save Reflection</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/goals.js"></script>
+</body>
+</html>

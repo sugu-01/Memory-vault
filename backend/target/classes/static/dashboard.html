@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — Home</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <!-- Topbar and slide-in drawer inserted by nav.js -->
+
+  <main class="app-container">
+    <!-- Calm Greeting -->
+    <header class="page-header" style="margin-bottom: 2rem;">
+      <h1 class="page-title" id="home-greeting">Good evening 👋</h1>
+      <p class="page-subtitle">What would you like to manage?</p>
+    </header>
+
+    <!-- Two Main Choice Hub Cards -->
+    <div class="home-choice-grid">
+      <!-- Choice 1: My Memory -->
+      <a href="/diary.html" class="choice-card choice-card-memory">
+        <div>
+          <div class="choice-card-header">
+            <span class="choice-card-icon">📖</span>
+            <h2 class="choice-card-title">My Memory</h2>
+          </div>
+          <p class="choice-card-desc">
+            Remember what matters. Personal diary, reflections, notes, and past memories.
+          </p>
+        </div>
+        <div class="choice-card-metric" id="metric-memories">
+          <span class="spinner"></span> Loading...
+        </div>
+      </a>
+
+      <!-- Choice 2: Goals to Be Done -->
+      <a href="/goals.html" class="choice-card choice-card-goals">
+        <div>
+          <div class="choice-card-header">
+            <span class="choice-card-icon">🎯</span>
+            <h2 class="choice-card-title">Goals to Be Done</h2>
+          </div>
+          <p class="choice-card-desc">
+            Keep moving forward. Goals, actionable tasks, deadlines, and reminders.
+          </p>
+        </div>
+        <div class="choice-card-metric" id="metric-goals">
+          <span class="spinner"></span> Loading...
+        </div>
+      </a>
+    </div>
+
+    <!-- Smart Daily Input -->
+    <div class="smart-input-box">
+      <h3 class="smart-input-title">
+        <span>✨</span>
+        <span>What happened today?</span>
+      </h3>
+      <form id="smart-input-form">
+        <textarea
+          id="smart-input-text"
+          class="smart-input-field"
+          placeholder="Write naturally... e.g. &quot;Finished my Java assignment&quot; or &quot;Tomorrow I need to submit the project&quot;"
+          required
+        ></textarea>
+
+        <div class="smart-input-actions">
+          <div class="smart-input-hints">
+            Auto-detects completed activities, creates tomorrow's tasks & reminders.
+          </div>
+          <button type="submit" class="btn btn-primary" id="smart-save-btn">
+            Save & Organize
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Automatically Generated Today's Summary -->
+    <section class="summary-box" id="daily-summary-section">
+      <div class="summary-header">
+        <div>
+          <h2 style="font-size:1.15rem; font-weight:700;">Today's Summary</h2>
+          <p class="text-xs text-secondary" id="summary-date-label">Daily review</p>
+        </div>
+        <span class="badge badge-neutral" id="summary-motivation-badge">Quiet progress</span>
+      </div>
+
+      <div id="summary-content">
+        <p class="text-muted text-sm"><span class="spinner"></span> Loading your summary...</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

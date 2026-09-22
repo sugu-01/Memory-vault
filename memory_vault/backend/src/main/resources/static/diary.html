@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — Diary & Memories</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .mood-btn {
+      font-size: 1.3rem;
+      padding: 0.4rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .mood-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      transform: scale(1.1);
+    }
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+    .tag-chip.selected {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent-light);
+    }
+    .memory-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      transition: var(--transition);
+    }
+    .memory-card:hover {
+      border-color: var(--border-light);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .star-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .star-btn.starred {
+      color: #fbbf24;
+    }
+    .ai-insights-box {
+      margin-top: 0.75rem;
+      padding: 0.85rem;
+      background: rgba(138, 154, 126, 0.10);
+      border: 1px solid rgba(138, 154, 126, 0.3);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content">
+      <div class="page-content">
+
+        <!-- Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">📖 Diary & Memories</h1>
+            <p class="page-subtitle">Your personal space for thoughts, experiences, and reflections.</p>
+          </div>
+          <button class="btn btn-primary" id="open-new-entry-btn">+ Write New Entry</button>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1rem;">
+          <div class="form-row" style="align-items: center;">
+            <div style="flex: 2;">
+              <input type="text" id="diary-search-input" placeholder="Search your memories and diary..." />
+            </div>
+            <div style="flex: 1; display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm filter-tab active" data-filter="all">All</button>
+              <button class="btn btn-secondary btn-sm filter-tab" data-filter="important">⭐ Important</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Banner / Status Notice -->
+        <div id="save-alert" class="alert hidden" style="margin-bottom: 1rem;"></div>
+
+        <!-- Memories List Container -->
+        <div id="memories-container">
+          <div class="card skeleton" style="height: 120px; margin-bottom: 1rem;"></div>
+          <div class="card skeleton" style="height: 120px; margin-bottom: 1rem;"></div>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination-controls" style="display:flex; justify-content:center; gap:0.5rem; margin-top:1.5rem;"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Entry Modal (Create / Edit) -->
+  <div class="modal-overlay" id="entry-modal">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Write Memory</h3>
+        <button class="btn btn-ghost btn-sm" id="close-modal-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="entry-form">
+          <input type="hidden" id="entry-id" value="" />
+
+          <div class="form-group">
+            <label class="form-label" for="entry-title">Title (Optional)</label>
+            <input type="text" id="entry-title" placeholder="A memorable afternoon, reflection, etc." />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="entry-date">Date</label>
+              <input type="date" id="entry-date" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mood</label>
+              <div style="display:flex; gap: 0.4rem;" id="mood-selector">
+                <button type="button" class="mood-btn" data-mood="HAPPY" title="Happy">😊</button>
+                <button type="button" class="mood-btn" data-mood="EXCITED" title="Excited">🤩</button>
+                <button type="button" class="mood-btn" data-mood="CALM" title="Calm">😌</button>
+                <button type="button" class="mood-btn" data-mood="NEUTRAL" title="Neutral">😐</button>
+                <button type="button" class="mood-btn" data-mood="TIRED" title="Tired">🥱</button>
+                <button type="button" class="mood-btn" data-mood="SAD" title="Sad">😢</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="entry-content">Original Entry (Safely Persisted) *</label>
+            <textarea id="entry-content" rows="8" placeholder="Write freely here. Your original entry will never be altered or lost..." required></textarea>
+          </div>
+
+          <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+            <input type="checkbox" id="entry-important" style="width:auto; cursor:pointer;" />
+            <label for="entry-important" style="cursor:pointer; font-weight:500;">⭐ Mark as Important Memory</label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tags</label>
+            <div id="tag-picker" style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.5rem;"></div>
+          </div>
+
+          <div id="modal-error-msg" class="form-error hidden" style="margin-bottom: 0.75rem;"></div>
+
+          <div class="modal-footer" style="padding:0; margin-top:1rem;">
+            <button type="button" class="btn btn-secondary" id="cancel-modal-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="save-entry-btn">Save Entry</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/diary.js"></script>
+</body>
+</html>

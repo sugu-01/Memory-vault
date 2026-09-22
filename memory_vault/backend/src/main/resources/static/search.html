@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — Global Search</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .search-hero {
+      max-width: 700px;
+      margin: 1.5rem auto 2rem auto;
+      text-align: center;
+    }
+    .search-input-lg {
+      font-size: 1.1rem;
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius);
+    }
+    .result-section {
+      margin-bottom: 2rem;
+    }
+    .result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .result-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content">
+      <div class="page-content">
+
+        <div class="search-hero">
+          <h1 class="page-title" style="margin-bottom:0.5rem;">🔍 Universal Search</h1>
+          <p class="page-subtitle" style="margin-bottom:1.5rem;">Quickly find any memory, task, or goal stored across your entire account.</p>
+          <input type="text" id="global-search-input" class="search-input-lg" placeholder="Search keywords, topics, reflections..." autofocus />
+        </div>
+
+        <div id="search-status" class="text-center text-muted" style="margin-bottom:1.5rem;"></div>
+
+        <div id="search-results" style="max-width: 800px; margin: 0 auto;"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/search.js"></script>
+</body>
+</html>

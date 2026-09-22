@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — Reminders</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .reminder-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+    }
+    .reminder-card:hover {
+      border-color: var(--border-light);
+    }
+    .reminder-card.inactive {
+      opacity: 0.6;
+    }
+    .history-item {
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content">
+      <div class="page-content">
+
+        <!-- Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">🔔 Reminders</h1>
+            <p class="page-subtitle">Never forget life events, commitments, and deadlines.</p>
+          </div>
+          <button class="btn btn-primary" id="open-new-reminder-btn">+ Set Reminder</button>
+        </div>
+
+        <!-- Reminders List -->
+        <div id="reminders-container">
+          <div class="card skeleton" style="height: 90px; margin-bottom: 1rem;"></div>
+          <div class="card skeleton" style="height: 90px; margin-bottom: 1rem;"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Reminder Modal -->
+  <div class="modal-overlay" id="reminder-modal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="reminder-modal-title">New Reminder</h3>
+        <button class="btn btn-ghost btn-sm" id="close-reminder-modal-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="reminder-form">
+          <input type="hidden" id="reminder-id" value="" />
+
+          <div class="form-group">
+            <label class="form-label" for="reminder-title">Title *</label>
+            <input type="text" id="reminder-title" placeholder="Doctor appointment, review draft, etc." required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reminder-desc">Description</label>
+            <textarea id="reminder-desc" rows="3" placeholder="Optional details..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="reminder-time">Date & Time *</label>
+              <input type="datetime-local" id="reminder-time" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reminder-repeat">Repeat</label>
+              <select id="reminder-repeat">
+                <option value="NONE">Don't Repeat</option>
+                <option value="DAILY">Daily</option>
+                <option value="WEEKLY">Weekly</option>
+                <option value="MONTHLY">Monthly</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="reminder-error-msg" class="form-error hidden" style="margin-bottom:0.75rem;"></div>
+
+          <div class="modal-footer" style="padding:0; margin-top:1rem;">
+            <button type="button" class="btn btn-secondary" id="cancel-reminder-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="save-reminder-btn">Save Reminder</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div class="modal-overlay" id="history-modal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Reminder History</h3>
+        <button class="btn btn-ghost btn-sm" id="close-history-modal-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="history-list" style="max-height:300px; overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/reminders.js"></script>
+</body>
+</html>

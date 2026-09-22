@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — Account & Data Settings</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .settings-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content">
+      <div class="page-content" style="max-width:800px; margin:0 auto;">
+
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">⚙️ Account & Data Settings</h1>
+            <p class="page-subtitle">Manage your personal account and backup your data at any time.</p>
+          </div>
+        </div>
+
+        <!-- Data Safety Banner -->
+        <div class="alert alert-info" style="margin-bottom:1.5rem;">
+          🔒 <strong>Data Safety Guarantee:</strong> All your memories, goals, evaluations, and tasks are stored in a persistent relational database. Your original entries are permanently protected and never overwritten.
+        </div>
+
+        <!-- Profile Section -->
+        <div class="settings-section">
+          <h2 style="font-size:1.15rem; margin-bottom:1rem;">👤 Personal Profile</h2>
+          <form id="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="profile-username">Username</label>
+                <input type="text" id="profile-username" disabled style="opacity:0.6; cursor:not-allowed;" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profile-email">Email Address</label>
+                <input type="email" id="profile-email" disabled style="opacity:0.6; cursor:not-allowed;" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="profile-display-name">Display Name</label>
+              <input type="text" id="profile-display-name" required />
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" id="save-profile-btn">Update Profile</button>
+          </form>
+        </div>
+
+        <!-- Change Password Section -->
+        <div class="settings-section">
+          <h2 style="font-size:1.15rem; margin-bottom:1rem;">🔑 Security & Password</h2>
+          <form id="password-form">
+            <div class="form-group">
+              <label class="form-label" for="current-password">Current Password</label>
+              <input type="password" id="current-password" required autocomplete="current-password" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="new-password">New Password (Min 6 chars)</label>
+                <input type="password" id="new-password" required minlength="6" autocomplete="new-password" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="confirm-password">Confirm New Password</label>
+                <input type="password" id="confirm-password" required minlength="6" autocomplete="new-password" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-secondary btn-sm" id="change-pwd-btn">Change Password</button>
+          </form>
+        </div>
+
+        <!-- Backup / Data Export Section -->
+        <div class="settings-section">
+          <h2 style="font-size:1.15rem; margin-bottom:0.5rem;">💾 Backup & Export My Data</h2>
+          <p class="text-xs text-secondary" style="margin-bottom:1.25rem;">
+            Export all your personal records in portable formats (JSON or CSV) for local backups and safekeeping.
+          </p>
+
+          <div style="display:flex; flex-wrap:wrap; gap:0.75rem;">
+            <a href="/api/export/json" class="btn btn-primary btn-sm" id="export-json-btn">
+              📥 Export All Data (JSON)
+            </a>
+            <a href="/api/export/csv?entity=memories" class="btn btn-secondary btn-sm" id="export-memories-btn">
+              📄 Export Memories (CSV)
+            </a>
+            <a href="/api/export/csv?entity=tasks" class="btn btn-secondary btn-sm" id="export-tasks-btn">
+              📄 Export Tasks (CSV)
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/settings.js"></script>
+</body>
+</html>

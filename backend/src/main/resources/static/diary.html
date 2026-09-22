@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Vault — My Memory</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .memory-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .memory-card:hover {
+      border-color: #D6D1C4;
+      box-shadow: var(--shadow);
+    }
+    .memory-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.65rem;
+    }
+    .mood-btn {
+      font-size: 1.25rem;
+      padding: 0.35rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .mood-btn.selected {
+      background: var(--soft-green);
+      border-color: var(--sage);
+      transform: scale(1.08);
+    }
+    .star-btn {
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      transition: color 0.15s;
+    }
+    .star-btn.starred {
+      color: #E29E3A;
+    }
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    .tag-chip.selected {
+      background: var(--lavender);
+      border-color: var(--soft-purple);
+      color: #5D507B;
+      font-weight: 600;
+    }
+    .ai-insights-box {
+      margin-top: 0.75rem;
+      padding: 0.85rem 1rem;
+      background: var(--lavender);
+      border: 1px solid var(--soft-purple);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Topbar and drawer inserted by nav.js -->
+
+  <main class="app-container">
+    <!-- Header -->
+    <div class="page-header" style="display:flex; justify-content:space-between; align-items:flex-end;">
+      <div>
+        <h1 class="page-title">📖 My Memory</h1>
+        <p class="page-subtitle">Remember what matters. Reflections, personal diary, and things to hold onto.</p>
+      </div>
+      <button class="btn btn-primary" id="open-memory-modal-btn">+ Add Memory</button>
+    </div>
+
+    <!-- Sub-navigation Tabs -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" data-tab="today">Today</button>
+      <button class="tab-btn" data-tab="important">⭐ Important</button>
+      <button class="tab-btn" data-tab="upcoming">⏰ Things to Remember</button>
+      <button class="tab-btn" data-tab="all">Past Memories</button>
+      <button class="tab-btn" data-tab="search">🔍 Search</button>
+    </nav>
+
+    <!-- Search Input Bar (Visible in search tab or always accessible) -->
+    <div id="search-bar-container" class="card hidden" style="margin-bottom: 1.25rem; padding: 0.75rem 1rem;">
+      <input type="text" id="memory-search-input" placeholder="Search across all your diary entries, notes, and reflections..." />
+    </div>
+
+    <!-- Memories Container -->
+    <div id="memories-container">
+      <div class="card skeleton" style="height: 110px; margin-bottom: 1rem;"></div>
+      <div class="card skeleton" style="height: 110px;"></div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div id="pagination-controls" style="display:flex; justify-content:center; gap:0.5rem; margin-top:2rem;"></div>
+  </main>
+
+  <!-- Add / Edit Memory Modal -->
+  <div class="modal-overlay" id="memory-modal">
+    <div class="modal" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="memory-modal-title">Write Memory</h3>
+        <button class="drawer-close" id="close-memory-modal-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="memory-form">
+          <input type="hidden" id="entry-id" value="" />
+
+          <div class="form-group">
+            <label class="form-label" for="entry-title">Title (Optional)</label>
+            <input type="text" id="entry-title" placeholder="A quiet thought, reflection, event..." />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label" for="entry-date">Date</label>
+              <input type="date" id="entry-date" required />
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Feeling / Mood</label>
+              <div style="display:flex; gap:0.35rem;" id="mood-selector">
+                <button type="button" class="mood-btn" data-mood="HAPPY" title="Happy">😊</button>
+                <button type="button" class="mood-btn" data-mood="EXCITED" title="Excited">🤩</button>
+                <button type="button" class="mood-btn" data-mood="CALM" title="Calm">😌</button>
+                <button type="button" class="mood-btn" data-mood="NEUTRAL" title="Neutral">😐</button>
+                <button type="button" class="mood-btn" data-mood="TIRED" title="Tired">🥱</button>
+                <button type="button" class="mood-btn" data-mood="SAD" title="Reflective">😢</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="entry-content">Your Memory & Thoughts (Safely Stored) *</label>
+            <textarea id="entry-content" rows="7" placeholder="Write freely here. Your authentic writing is permanently safe and never overwritten..." required></textarea>
+          </div>
+
+          <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+            <input type="checkbox" id="entry-important" style="width:auto; cursor:pointer;" />
+            <label for="entry-important" style="cursor:pointer; font-weight:500; font-size:0.9rem;">
+              ⭐ Mark as Important Memory
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tags</label>
+            <div id="tag-picker" style="display:flex; flex-wrap:wrap; gap:0.35rem;"></div>
+          </div>
+
+          <div id="modal-error-msg" class="form-error hidden" style="margin-bottom:0.75rem;"></div>
+
+          <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.25rem;">
+            <button type="button" class="btn btn-secondary" id="cancel-memory-modal-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="save-entry-btn">Save Memory</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/diary.js"></script>
+</body>
+</html>
